@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1> Sign in</h1>
+    {% if form %}
+        <form action="" method="POST">
+            {{form.hidden_tag() }}
+
+                <!-- Render form fields -->
+                <p> {{form.username.label }} </p>  <!-- Label is coursenumber-->
+                <p> {{form.username(class='textinput')}} </p>         <!-- input box for major -->
+
+
+                <!-- neatly prints out all the errors of the forms major field and print them out as red -->
+                {% for error in form.username.errors %}
+                <span style ="color:red;"> [{{ error }}]</span>
+                {% endfor %}
+
+                <p> {{ form.password.label }}</p>
+                <p> {{ form.password(class='textinput') }}</p>
+
+                <!-- neatly prints out all the errors of the forms major field and print them out as red -->
+                {% for error in form.password.errors %}
+                <span style ="color:red;"> [{{ error }}]</span>
+                {% endfor %}
+
+                <p> {{ form.remember_me()}} {{form.remember_me.label}}</p>
+                
+                <p> New User? <a href="{{ url_for('register') }}"> Click to Register! </a></p>
+                
+            <p>{{form.submit(class='button') }}</p> <!-- Submit button, css selector is 'button'-->
+        </form>
+    
+    {% endif %}
+
+{% endblock %}

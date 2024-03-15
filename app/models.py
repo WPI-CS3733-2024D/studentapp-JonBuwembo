@@ -2,8 +2,15 @@ from app import db
 from enum import unique
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from app import login
 
-class Class(db.Model):
+@login.user_loader
+def load_user(id):
+    return Student.query.get(int(id))
+
+
+class Class(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     coursenum = db.Column(db.String(3))  
     title = db.Column(db.String(150))
@@ -14,14 +21,14 @@ class Class(db.Model):
     def getTitle(self):
         return self.title
 
-class Major(db.Model):
+class Major(UserMixin, db.Model):
     name = db.Column(db.String(20), primary_key=True)
     department = db.Column(db.String(150))
     classes = db.relationship('Class', backref='coursemajor', lazy='dynamic')
     def __repr__(self):
         return '<Major name: {} - department: {}>'.format(self.name, self.department)
-    
-class Student(db.Model):
+
+class Student(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(64), unique=True, index = True) #usernames are unique
     password_hash = db.Column(db.String(128))
