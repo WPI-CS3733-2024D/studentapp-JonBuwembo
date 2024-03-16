@@ -14,7 +14,7 @@ enrolled = db.Table('enrolled',
                      db.Column('classid', db.Integer, db.ForeignKey('class.id'))
                      )
 
-class Class(UserMixin, db.Model):
+class Class(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     coursenum = db.Column(db.String(3))  
     title = db.Column(db.String(150))
@@ -27,7 +27,7 @@ class Class(UserMixin, db.Model):
     def getTitle(self):
         return self.title
 
-class Major(UserMixin, db.Model):
+class Major(db.Model):
     name = db.Column(db.String(20), primary_key=True)
     department = db.Column(db.String(150))
     classes = db.relationship('Class', backref='coursemajor', lazy='dynamic')
@@ -70,5 +70,5 @@ class Student(UserMixin, db.Model):
         # self refers to the student object.
         self.classes.filter(enrolled.c.classid == newclass.id).count() > 0 # if greater than zero then the student is enrolled in the class
         
-    def enrolledCourses(self, newclass):
+    def enrolledCourses(self):
         return self.classes

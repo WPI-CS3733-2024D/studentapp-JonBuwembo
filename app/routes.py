@@ -10,15 +10,15 @@ from datetime import datetime
 def initDB(*args, **kwargs):
     if app._got_first_request:
         db.create_all()
-        # if Major.query.count() == 0:
-        #     majors = [{'name':'CptS','department':'School of EECS'},
-        #           {'name':'SE','department':'School of EECS'},
-        #           {'name':'EE','department':'School of EECS'},
-        #           {'name':'ME','department':'Mechancial Engineering'},
-        #           {'name':'MATH', 'department':'Mathematics'}]
-        #     for t in majors:
-        #          db.session.add(Major(name= t['name'], department=t['department']))
-        #     db.session.commit()
+        if Major.query.count() == 0:
+            majors = [{'name':'CptS','department':'School of EECS'},
+                  {'name':'SE','department':'School of EECS'},
+                  {'name':'EE','department':'School of EECS'},
+                  {'name':'ME','department':'Mechancial Engineering'},
+                  {'name':'MATH', 'department':'Mathematics'}]
+            for t in majors:
+                 db.session.add(Major(name= t['name'], department=t['department']))
+            db.session.commit()
 
 @app.route('/', methods=['GET'])
 @app.route('/index', methods=['GET'])
@@ -110,3 +110,8 @@ def edit_profile():
     else:
         pass
     return render_template('edit_profile.html', title='Edit Profile', form = eform)
+
+@app.route('/roster/<classid>', methods=['GET'])
+def roster(classid):
+    theClass = Class.query.filter_by(id = classid).first()
+    return render_template('roster.html', title='Class Roster', current_class = theClass)
