@@ -68,7 +68,7 @@ class Student(UserMixin, db.Model):
 
     def is_enrolled(self, newclass):
         # self refers to the student object.
-        self.classes.filter(enrolled.c.classid == newclass.id).count() > 0 # if greater than zero then the student is enrolled in the class
+        return self.classes.filter(enrolled.c.classid == newclass.id).count() > 0 # if greater than zero then the student is enrolled in the class
         
     def enrolledCourses(self):
         return self.classes
