@@ -12,7 +12,8 @@
         <p><b> Enrolled Classes: </b></p>
 
         <!-- display all courses the student is enrolled in-->
-        {% for class in student.enrolledCourses() %}
+        {% for enrollment in student.enrolledCourses() %}
+            {% set class = enrollment.classenrolled %}
             {% include '_class.html' %}
         {% endfor %}
     {% endif %}

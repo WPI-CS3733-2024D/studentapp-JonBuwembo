@@ -1,31 +1,68 @@
 
 from app import db
-#create the database file, if it doesn't exist. 
-db.create_all()
 
 # import db models
-from app.models import Class, Major, Student
+from app.models import Class, Major, Student, Enrolled
+from datetime import datetime
 
+#create the database file, if it changes. 
+db.create_all()
 c1 = Class.query.filter_by(coursenum = '321').filter_by(major='CptS').first()
 c2 = Class.query.filter_by(coursenum = '322').filter_by(major='CptS').first()
 c3 = Class.query.filter_by(coursenum = '355').filter_by(major='CptS').first()
 c4 = Class.query.filter_by(coursenum = '451').filter_by(major='CptS').first()
 
-s1 = Student.query.filter_by(username='JonathanB').first()
-
-s1.classes.append(c2)
-s1.classes.append(c3)
-s1.classes.append(c4)
+db.classes.add(c1)
+db.classes.add(c2)
+db.classes.add(c3)
 db.session.commit()
 
-#unenroll student s1 from c4:
-s1.classes.remove(c4)
+s1 = Student(username = 'Jack', firstname = 'Jack', lastname = 'Adams', email='jadams@gmail.com')
+s2 = Student(username = 'Daniel', firstname = 'Daniel', lastname = 'Kreeg', email='dk@gmail.com')
+db.session.add(s1)
+db.session.add(s2)
 db.session.commit()
 
-# retrieve all classes a given student is enrolled in
+s1 = Student.query.filter_by(username='Jack').first()
+s2 = Student.query.filter_by(username='Daniel').first()
 
-for c in s1.classes:
+c1 = Class.query.filter_by(coursenum='322').first()
+c2 = Class.query.filter_by(coursenum='355').first()
+c3 = Class.query.filter_by(coursenum='451').first()
+
+# Alternative ways to enroll students
+assoc1 = Enrolled(enrolldate=datetime.utcnow())
+assoc1.classenrolled = c1
+assoc1.studentenrolled = s1
+db.session.add(assoc1)
+db.session.commit()
+
+assoc2 = Enrolled(enrolldate=datetime.utcnow())
+assoc2.classenrolled = c2
+s1.classes.append(assoc2)
+db.session.commit()
+
+assoc3 = Enrolled(classenrolled = c3, enrolldate=datetime.utcnow())
+s1.roster.append(assoc3)
+db.session.commit()
+
+assoc4 = Enrolled(studentenrolled = s2, enrolldate=datetime.utcnow())
+s1.roster.append(assoc4)
+db.session.commit()
+
+assoc5 = Enrolled(studentenrolled = s2)
+c2.roster.append(assoc5)
+db.session.commit()
+
+assoc6 = Enrolled(studentenrolled = s2, classenrolled = c3)
+c2.roster.append(assoc6)
+db.session.commit()
+
+for c in c1.roster:
     print(c)
+
+for s in s1.classes:
+    print(s)
 
 # create a major
 newMajor = Major(name='CptS',department='School of EECS')
@@ -38,7 +75,6 @@ for m in Major.query.all():
     print(m)
 
 # create a class; assign class majors to the major created above
-from app.models import Class
 newClass = Class(coursenum='322', major='CptS', title='Software Engineering')
 db.session.add(newClass)
 newClass = Class(coursenum='315', major ='CE', title='Fluid Mechanics')
