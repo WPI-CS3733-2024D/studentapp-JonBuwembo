@@ -68,7 +68,7 @@ class Student(UserMixin, db.Model):
         if self.is_enrolled(oldclass):
             # find the enrollment and unenroll
             # filter by student id and then the old class id to find the enrollment with those ids.
-            currentEnrollment = Enrolled.query.filter_by(studentid=self.id)._filter_by(classid = oldclass.id).first()
+            currentEnrollment = Enrolled.query.filter_by(studentid=self.id).filter_by(classid = oldclass.id).first()
             db.session.delete(currentEnrollment)
             db.session.commit()
 
